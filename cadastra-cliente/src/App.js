@@ -72,10 +72,17 @@ class App extends Component {
     //CARREGAR OS DADOS DO ID NA TELA
     $.ajax({
       url: `http://localhost:8080/cliente/${id}`,
-      dataType: 'json',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'charset': 'utf8'
+      },
+      
       success: function (resposta) {
-        this.setState({ listaCliente: resposta });
+        console.log(resposta);
+        this.setState({ listaCliente: [resposta]});
       }.bind(this)
+      
     });
   
     //EDITAR O CLIENTE
