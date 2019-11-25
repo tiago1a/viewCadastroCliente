@@ -55,16 +55,16 @@ class App extends Component {
       },
     })
   }
-  excluirForm(evento,id) {
-    evento.preventDefault();
+  excluirForm(id) {
+    console.log(id);
     $.ajax({
-      url: ("http://localhost:8080/cliente")/{id},
+      url: `http://localhost:8080/cliente/${id}`,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'charset': 'utf8'
       },
-      type: 'delete',
+      type: 'delete'
     })
   }
 
@@ -140,7 +140,8 @@ render() {
               </thead>
               <tbody>
                 {
-                  this.state.listaCliente.map(function (cliente) {
+                  this.state.listaCliente.map((cliente) => {
+                    
                     return (
                       <tr key={cliente.id}>
                         <td>{cliente.cpf}</td>
@@ -150,7 +151,7 @@ render() {
                         <td>{cliente.usuario}</td>
                         <td>{cliente.senha}</td>
                         <td>{cliente.acao}
-                          <button name='excluir' onClick = {this.state.excluirForm()}><IoIosTrash /></button>
+                          <button name='excluir' onClick={() => this.excluirForm(cliente.id)}><IoIosTrash /></button>
                           
                         </td>
                       </tr>
@@ -162,8 +163,6 @@ render() {
           </div>
         </div>
       </div>
-
-
     </div>
   );
 }
