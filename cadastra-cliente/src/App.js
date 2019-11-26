@@ -4,17 +4,28 @@ import './css/side-menu.css';
 import $ from 'jquery';
 import InputCustomizado from './componentes/InputCustomizado'
 
-import { IoIosTrash } from "react-icons/io";
-import { IoMdBuild } from "react-icons/io";
-import { IoIosAddCircle } from "react-icons/io";
-
+import { IoIosAddCircle, IoIosTrash, IoMdBuild } from "react-icons/io";
 
 
 class App extends Component {
 
   constructor() {
     super();
-    this.state = { listaCliente: [], id: '', cpf: '', nome: '', email: '', telefone: '', senha: '', usuario: '' };
+    this.state = {
+      listaCliente: [],
+      id: '',
+      cpf: '',
+      nome: '',
+      email: '',
+      telefone: '',
+      senha: '',
+      usuario: '',
+      cep: '',
+      bairro: '',
+      logradouro: '',
+      cidade: '',
+      uf: '',
+    };
 
     this.enviaForm = this.enviaForm.bind(this);
     this.editaForm = this.editaForm.bind(this);
@@ -24,6 +35,7 @@ class App extends Component {
     this.setEmail = this.setEmail.bind(this);
     this.setUsuario = this.setUsuario.bind(this);
     this.setSenha = this.setSenha.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -31,18 +43,18 @@ class App extends Component {
     this.obterTodos();
   }
 
-    obterTodos() {
-        $.ajax({
-                url: "http://localhost:8080/cliente",
-                dataType: 'json',
-                success: function (resposta) {
-                    this.setState({listaCliente: resposta});
-                }.bind(this)
-            }
-        );
+  obterTodos() {
+    $.ajax({
+      url: "http://localhost:8080/cliente",
+      dataType: 'json',
+      success: function (resposta) {
+        this.setState({ listaCliente: resposta });
+      }.bind(this)
     }
+    );
+  }
 
-    enviaForm(evento) {
+  enviaForm(evento) {
     evento.preventDefault();
     $.ajax({
       url: "http://localhost:8080/cliente",
@@ -52,7 +64,14 @@ class App extends Component {
         'charset': 'utf8'
       },
       type: 'post',
-      data: JSON.stringify({ cpf: this.state.cpf, nome: this.state.nome, telefone: this.state.telefone, email: this.state.email, usuario: this.state.senha, senha: this.state.senha }),
+      data: JSON.stringify({
+        cpf: this.state.cpf,
+        nome: this.state.nome,
+        telefone: this.state.telefone,
+        email: this.state.email,
+        usuario: this.state.senha,
+        senha: this.state.senha
+      }),
       success: function (resposta) {
         console.log("ENVIADO COM SUCESSO!");
       },
@@ -61,6 +80,7 @@ class App extends Component {
       },
     })
   }
+
   excluirForm(id) {
     $.ajax({
       url: `http://localhost:8080/cliente/${id}`,
@@ -70,8 +90,8 @@ class App extends Component {
         'charset': 'utf8'
       },
       type: 'delete',
-      success:  resposta => {
-          this.obterTodos();
+      success: resposta => {
+        this.obterTodos();
       }
     })
   }
@@ -89,6 +109,30 @@ class App extends Component {
         console.log(resposta);
         this.setState(resposta);
       }
+    });
+  }
+
+
+  preencherEnderecoComCep() {
+
+    const cep = this.state.cep;
+
+    $.ajax({
+      url: `http://viacep.com.br/ws/${cep}/json/`,
+      dataType: 'jsonp',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'charset': 'utf8'
+      },
+      type: 'GET',
+      success: (resposta) => {
+        this.setState(resposta);
+      },
+      error: function (resposta) {
+        console.log("ERRO NO ENVIO");
+      },
     });
   }
 
@@ -110,7 +154,7 @@ class App extends Component {
         email: this.state.email,
         usuario: this.state.usuario,
         senha: this.state.senha,
-          id: this.state.id,
+        id: this.state.id,
       }),
       success: (resposta) => {
         console.log("ALTERADO COM SUCESSO");
@@ -129,23 +173,31 @@ class App extends Component {
   setNome(evento) {
     this.setState({ nome: evento.target.value })
   }
+
   setTelefone(evento) {
     this.setState({ telefone: evento.target.value })
   }
+
   setEmail(evento) {
     this.setState({ email: evento.target.value })
   }
+
   setUsuario(evento) {
     this.setState({ usuario: evento.target.value })
   }
+
   setSenha(evento) {
     this.setState({ senha: evento.target.value })
+  }
+
+  handleChange(evento) {
+    this.setState({ [evento.target.name]: evento.target.value })
   }
 
   render() {
     console.log("render");
     return (
-      <div id="layout" >
+      <div id="layout">
         <a href="#menu" id="menuLink" className="menu-link">
           <span></span>
         </a>
@@ -167,22 +219,40 @@ class App extends Component {
           <div className="content" id="content">
             <div className="pure-form pure-form-aligned">
               <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
-                <InputCustomizado id="cpf" type="text" name="cpf" value={this.state.cpf} onChange={this.setcpf} label="CPF" />
-                <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome" />
-                <InputCustomizado id="telefone" type="text" name="telefone" value={this.state.telefone} onChange={this.setTelefone} label="Telefone" />
-                <InputCustomizado id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail} label="Email" />
-                <InputCustomizado id="usuario" type="text" name="usuario" value={this.state.usuario} onChange={this.setUsuario} label="Usuário" />
-                <InputCustomizado id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} label="Senha" />
-                <InputCustomizado id="cep" type="text" name="cep" value={this.state.cep} onChange={this.setCep} label="Cep" />
-                <InputCustomizado id="logradouro" type="text" name="logradouro" value={this.state.logradouro} onChange={this.setLogradouro} label="Logradouro" />
-                <InputCustomizado id="bairro" type="text" name="bairro" value={this.state.bairro} onChange={this.setBairro} label="Bairro" />
-                <InputCustomizado id="cidade" type="text" name="cidade" value={this.state.cidade} onChange={this.setCidade} label="Cidade" />
-                <InputCustomizado id="UF" type="text" name="uf" value={this.state.uf} onChange={this.setUf} label="UF" />
+                <InputCustomizado id="cpf" type="text" name="cpf" value={this.state.cpf}
+                  onChange={this.setcpf} label="CPF" />
+                <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome}
+                  onChange={this.setNome} label="Nome" />
+                <InputCustomizado id="telefone" type="text" name="telefone" value={this.state.telefone}
+                  onChange={this.setTelefone} label="Telefone" />
+                <InputCustomizado id="email" type="email" name="email" value={this.state.email}
+                  onChange={this.setEmail} label="Email" />
+                <InputCustomizado id="usuario" type="text" name="usuario" value={this.state.usuario}
+                  onChange={this.setUsuario} label="Usuário" />
+                <InputCustomizado id="senha" type="password" name="senha" value={this.state.senha}
+                  onChange={this.setSenha} label="Senha" />
+                <InputCustomizado id="cep" type="text" name="cep" value={this.state.cep}
+                  onChange={this.handleChange} onBlur={() => this.preencherEnderecoComCep()} label="Cep" />
+                <InputCustomizado id="logradouro" type="text" name="logradouro"
+                  value={this.state.logradouro} onChange={this.handleChange}
+                  label="Logradouro" />
+                <InputCustomizado id="bairro" type="text" name="bairro" value={this.state.bairro}
+                  onChange={this.handleChange} label="Bairro" />
+                <InputCustomizado id="cidade" type="text" name="cidade" value={this.state.cidade}
+                  onChange={this.handleChange} label="Cidade" />
+                <InputCustomizado id="UF" type="text" name="uf" value={this.state.uf}
+                  onChange={this.handleChange} label="UF" />
                 <label></label>
-                <div><button type="submit" className="pure-button pure-button-primary">SALVAR</button></div>
-                  <br/>
-                  <br/>
-                <div><button type="button" className="pure-button pure-button-primary" onClick={e => this.enviaEdicao(e)} >EDITAR</button></div>
+                <div>
+                  <button type="submit" className="pure-button pure-button-primary">SALVAR</button>
+                </div>
+                <br />
+                <br />
+                <div>
+                  <button type="button" className="pure-button pure-button-primary"
+                    onClick={e => this.enviaEdicao(e)}>EDITAR
+                                    </button>
+                </div>
               </form>
 
             </div>
@@ -211,7 +281,10 @@ class App extends Component {
                         <tr key={cliente.id}>
                           <td>{cliente.cpf}</td>
                           <td>{cliente.nome}</td>
-                          <td>{cliente.telefone} <button name='add' onClick={() => this.addTelefonForm(cliente.id)}><IoIosAddCircle/></button></td>
+                          <td>{cliente.telefone}
+                            <button name='add' onClick={() => this.addTelefonForm(cliente.id)}>
+                              <IoIosAddCircle /></button>
+                          </td>
                           <td>{cliente.email}</td>
                           <td>{cliente.usuario}</td>
                           <td>{cliente.senha}</td>
@@ -221,8 +294,10 @@ class App extends Component {
                           <td>{cliente.cidade}</td>
                           <td>{cliente.uf}</td>
                           <td>{cliente.acao}
-                            <button name='excluir' onClick={() => this.excluirForm(cliente.id)}><IoIosTrash /></button>
-                            <button name='editar' onClick={() => this.editaForm(cliente.id)}><IoMdBuild /></button>
+                            <button name='excluir' onClick={() => this.excluirForm(cliente.id)}>
+                              <IoIosTrash /></button>
+                            <button name='editar' onClick={() => this.editaForm(cliente.id)}>
+                              <IoMdBuild /></button>
                           </td>
                         </tr>
                       );
