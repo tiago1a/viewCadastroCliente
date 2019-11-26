@@ -6,6 +6,7 @@ import InputCustomizado from './componentes/InputCustomizado'
 
 import { IoIosTrash } from "react-icons/io";
 import { IoMdBuild } from "react-icons/io";
+import { IoIosAddCircle } from "react-icons/io";
 
 
 
@@ -121,19 +122,6 @@ class App extends Component {
     })
   }
 
-  /**mandaEdicao(resposta){
-    console.log(resposta);
-    $.ajax({
-      type: 'PUT',
-      url: `http://localhost:8080/cliente/${resposta.id}`,
-      contentType: 'application/json',
-      data: JSON.stringify({ cpf: this.resposta.setcpf, nome: this.resposta.setNome, telefone: this.resposta.setTelefone, email: this.resposta.setEmail, usuario: this.resposta.setUsuario, senha: this.resposta.setSenha}),
-      success: function () {
-        alert('cadastrado com sucesso');
-      }
-    });
-  }*/
-
   setcpf(evento) {
     this.setState({ cpf: evento.target.value })
   }
@@ -223,7 +211,7 @@ class App extends Component {
                         <tr key={cliente.id}>
                           <td>{cliente.cpf}</td>
                           <td>{cliente.nome}</td>
-                          <td>{cliente.telefone}</td>
+                          <td>{cliente.telefone} <button name='add' onClick={() => this.addTelefonForm(cliente.id)}><IoIosAddCircle/></button></td>
                           <td>{cliente.email}</td>
                           <td>{cliente.usuario}</td>
                           <td>{cliente.senha}</td>
