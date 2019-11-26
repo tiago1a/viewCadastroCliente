@@ -95,7 +95,7 @@ class App extends Component {
       },
       type: 'PUT',
       data: JSON.stringify({ cpf: this.evento.setcpf}),
-      success: function (resposta) {
+      success: function (evento) {
         console.log("ALTERADO COM SUCESSO");
       },
       error: function (resposta) {
@@ -167,6 +167,11 @@ class App extends Component {
                 <InputCustomizado id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail} label="Email" />
                 <InputCustomizado id="usuario" type="text" name="usuario" value={this.state.usuario} onChange={this.setUsuario} label="Usuário" />
                 <InputCustomizado id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} label="Senha" />
+                <InputCustomizado id="cep" type="text" name="cep" value={this.state.cep} onChange={this.setCep} label="Cep" />
+                <InputCustomizado id="logradouro" type="text" name="logradouro" value={this.state.logradouro} onChange={this.setLogradouro} label="Logradouro" />
+                <InputCustomizado id="bairro" type="text" name="bairro" value={this.state.bairro} onChange={this.setBairro} label="Bairro" />
+                <InputCustomizado id="cidade" type="text" name="cidade" value={this.state.cidade} onChange={this.setCidade} label="Cidade" />
+                <InputCustomizado id="UF" type="text" name="uf" value={this.state.uf} onChange={this.setUf} label="UF" />
                 <label></label>
                 <div><button type="submit" className="pure-button pure-button-primary">SALVAR</button></div>
                 <div><button type="submit" className="pure-button pure-button-primary" onClick={() => this.enviaEdicao} >EDITAR</button></div>
@@ -183,6 +188,11 @@ class App extends Component {
                     <th>Email</th>
                     <th>Usuario</th>
                     <th>Senha</th>
+                    <th>Cep</th>
+                    <th>Logradouro</th>
+                    <th>Bairro</th>
+                    <th>Cidade</th>
+                    <th>UF</th>
                     <th>Ação</th>
                   </tr>
                 </thead>
@@ -197,6 +207,11 @@ class App extends Component {
                           <td>{cliente.email}</td>
                           <td>{cliente.usuario}</td>
                           <td>{cliente.senha}</td>
+                          <td>{cliente.cep}</td>
+                          <td>{cliente.logradouro}</td>
+                          <td>{cliente.bairro}</td>
+                          <td>{cliente.cidade}</td>
+                          <td>{cliente.uf}</td>
                           <td>{cliente.acao}
                             <button name='excluir' onClick={() => this.excluirForm(cliente.id)}><IoIosTrash /></button>
                             <button name='editar' onClick={() => this.editaForm(cliente.id)}><IoMdBuild /></button>
