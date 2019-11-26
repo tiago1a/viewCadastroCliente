@@ -27,17 +27,21 @@ class App extends Component {
 
   componentDidMount() {
     console.log("didMount");
-    $.ajax({
-      url: "http://localhost:8080/cliente",
-      dataType: 'json',
-      success: function (resposta) {
-        this.setState({ listaCliente: resposta });
-      }.bind(this)
-    }
-    );
+    this.obterTodos();
   }
 
-  enviaForm(evento) {
+    obterTodos() {
+        $.ajax({
+                url: "http://localhost:8080/cliente",
+                dataType: 'json',
+                success: function (resposta) {
+                    this.setState({listaCliente: resposta});
+                }.bind(this)
+            }
+        );
+    }
+
+    enviaForm(evento) {
     evento.preventDefault();
     $.ajax({
       url: "http://localhost:8080/cliente",
@@ -64,7 +68,10 @@ class App extends Component {
         'Content-Type': 'application/json',
         'charset': 'utf8'
       },
-      type: 'delete'
+      type: 'delete',
+      success:  resposta => {
+          this.obterTodos();
+      }
     })
   }
 
@@ -85,24 +92,35 @@ class App extends Component {
   }
 
   enviaEdicao(evento) {
+
     evento.preventDefault();
     $.ajax({
-      url: `http://localhost:8080/cliente/${evento.id}`,
+      url: `http://localhost:8080/cliente/${this.state.id}`,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'charset': 'utf8'
       },
       type: 'PUT',
-      data: JSON.stringify({ cpf: this.evento.setcpf}),
-      success: function (resposta) {
+      data: JSON.stringify({
+        cpf: this.state.cpf,
+        nome: this.state.nome,
+        telefone: this.state.telefone,
+        email: this.state.email,
+        usuario: this.state.usuario,
+        senha: this.state.senha,
+          id: this.state.id,
+      }),
+      success: (resposta) => {
         console.log("ALTERADO COM SUCESSO");
+        this.obterTodos();
       },
       error: function (resposta) {
         console.log("ERRO NO ENVIO");
       },
     })
   }
+
   /**mandaEdicao(resposta){
     console.log(resposta);
     $.ajax({
@@ -169,7 +187,9 @@ class App extends Component {
                 <InputCustomizado id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} label="Senha" />
                 <label></label>
                 <div><button type="submit" className="pure-button pure-button-primary">SALVAR</button></div>
-                <div><button type="submit" className="pure-button pure-button-primary" onClick={() => this.enviaEdicao} >EDITAR</button></div>
+                  <br/>
+                  <br/>
+                <div><button type="button" className="pure-button pure-button-primary" onClick={e => this.enviaEdicao(e)} >EDITAR</button></div>
               </form>
 
             </div>
